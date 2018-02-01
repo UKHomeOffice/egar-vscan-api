@@ -1,7 +1,7 @@
 pipeline:
   build_and_deploy_code:
       image: maven
-      privileged: true
+      privileged: false
       when:
         branch: [master, develop]
       environment:
@@ -10,7 +10,7 @@ pipeline:
         - ./build-deploy.sh
   build_docker_image:
     image: docker:17.09.0-ce
-    privileged: true
+    privileged: false
     when:
       branch: [master, develop]
     environment:
@@ -21,7 +21,7 @@ pipeline:
       - ./docker-build.sh egar-vscan-api
   deploy_docker_image:
     image: docker:17.09.0-ce
-    privileged: true
+    privileged: false
     when:
       branch: [master, develop]
     environment:
