@@ -19,8 +19,10 @@ pipeline:
       - apk update
       - apk add libxml2-utils
       - ./docker-build.sh egar-vscan-api
-  deploy_docker_image:
+  image_to_quay:
     image: docker:17.09.0-ce
+    secrets:
+      - docker_password
     privileged: false
     when:
       branch: [master, develop]
