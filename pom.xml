@@ -213,7 +213,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<repository>egar/${project.artifactId}</repository>
+					<repository>${project.artifactId}</repository>
 					<buildArgs>
 						<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
 					</buildArgs>
@@ -222,13 +222,6 @@
 			<!-- Docker build : end -->
 
 		</plugins>
-		<extensions>
-			<extension>
-				<groupId>org.springframework.build</groupId>
-				<artifactId>aws-maven</artifactId>
-				<version>5.0.0.RELEASE</version>
-			</extension>
-		</extensions>
 	</build>
 
 	<pluginRepositories>
@@ -242,7 +235,7 @@
 	</pluginRepositories>
 
 
-	<version>4.0.1</version>
+	<version>4.0.2</version>
 	<name>VScan API application</name>
 	<description>API for virus scanning files for use in eGAR.</description>
 </project> 

@@ -8,17 +8,6 @@ pipeline:
         - DOCKER_HOST=tcp://172.17.0.1:2375
       commands:
         - ./build-deploy.sh
-  build_docker_image:
-    image: docker:17.09.0-ce
-    privileged: false
-    when:
-      branch: [master, develop]
-    environment:
-      - DOCKER_HOST=tcp://172.17.0.1:2375
-    commands:
-      - apk update
-      - apk add libxml2-utils
-      - ./docker-build.sh egar-vscan-api
   image_to_quay:
     image: docker:17.09.0-ce
     secrets:
