@@ -8,4 +8,4 @@ docker tag $NAME:$version quay.io/ukhomeofficedigital/$NAME:$version
 docker push quay.io/ukhomeofficedigital/$NAME:$version
 
 docker tag $NAME:$version quay.io/ukhomeofficedigital/$NAME:latest
-docker push quay.io/ukhomeofficedigital/$NAME:lastest
+docker push quay.io/ukhomeofficedigital/$NAME:latest
