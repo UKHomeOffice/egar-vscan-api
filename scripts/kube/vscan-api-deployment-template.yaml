@@ -52,7 +52,7 @@ spec:
           initialDelaySeconds: 60
           periodSeconds: 20
           httpGet:
-            path: /health
+            path: /healthz
             port: 8080
         resources: {}
       restartPolicy: Always
