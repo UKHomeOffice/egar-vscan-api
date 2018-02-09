@@ -1,4 +1,4 @@
-# API for Virus scanning files...
+# API for Virus scanning files
 
 An api that will:
 

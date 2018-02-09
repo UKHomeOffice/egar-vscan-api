@@ -12,7 +12,4 @@ public interface FileClient {
 	MultipartFileResource retrieveFile(FileRequest fileRequest) throws DataNotFoundVSException, FileClientVSException;
 
 	void updateObjectTags(FileRequest fileRequest, ScanResult result) throws FileClientVSException;
-
-	@Deprecated
-	URL moveToNewBucket(String fileLink);
 }

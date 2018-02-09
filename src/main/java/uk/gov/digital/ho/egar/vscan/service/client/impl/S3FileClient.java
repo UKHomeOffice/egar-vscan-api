@@ -1,6 +1,8 @@
 package uk.gov.digital.ho.egar.vscan.service.client.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,9 @@ import uk.gov.digital.ho.egar.vscan.service.client.model.MultipartFileResource;
 public class S3FileClient implements FileClient {
 
 	private final Log logger = LogFactory.getLog(S3FileClient.class);
+
+	public static final String UTF_8 = "UTF-8";
+
 	@Autowired
 	private AmazonS3 s3Client;
 
@@ -46,8 +51,9 @@ public class S3FileClient implements FileClient {
 
 		try {
 			uri = new AmazonS3URI(fileRequest.getFileLink());
-			String[] fName = uri.getKey().split("[\\\\/]");
-			S3Object object = s3Client.getObject(new GetObjectRequest(uri.getBucket(), uri.getKey()));
+			String key = urlDecodeKey(uri);
+			String[] fName = key.split("[\\\\/]");
+			S3Object object = s3Client.getObject(new GetObjectRequest(uri.getBucket(), key));
 			file = MultipartFileResource.builder()
 					.filename(fName[fName.length - 1])
 					.inputStream(object.getObjectContent())
@@ -69,6 +75,7 @@ public class S3FileClient implements FileClient {
 	 */
 	public void updateObjectTags(FileRequest fileRequest, ScanResult result) {
 		AmazonS3URI objectUri = new AmazonS3URI(fileRequest.getFileLink());
+		String key = urlDecodeKey(objectUri);
 		String scannedValue = "Infected";
 		if (result.isClean())
 			scannedValue = "Clean";
@@ -78,28 +85,17 @@ public class S3FileClient implements FileClient {
 		tags.add(new Tag("Scanned Value", scannedValue));
 
 		s3Client.setObjectTagging(
-				new SetObjectTaggingRequest(objectUri.getBucket(), objectUri.getKey(), new ObjectTagging(tags)));
+				new SetObjectTaggingRequest(objectUri.getBucket(), key, new ObjectTagging(tags)));
 	}
 
-	/**
-	 * Move to new bucket
-	 */
-	//TODO Remove this function, we will use File APIs' method
-	@Override
-	public URL moveToNewBucket(String fileLink) {
-
-		AmazonS3URI uri = new AmazonS3URI(fileLink);
+	public String urlDecodeKey(AmazonS3URI uri){
+		String urlDecodedKey = uri.getKey();
 		try {
-			CopyObjectRequest copyObject = new CopyObjectRequest(uri.getBucket(), uri.getKey(),
-					s3Config.getCleanbucket(), uri.getKey());
-			s3Client.copyObject(copyObject);
-			s3Client.deleteObject(uri.getBucket(), uri.getKey());
-
-		} catch (AmazonClientException e) {
-			logger.info("Error Message: " + e.getMessage());
-			// throw something
+			urlDecodedKey = URLDecoder.decode(urlDecodedKey, UTF_8);
+		} catch (UnsupportedEncodingException e) {
+			logger.error(String.format("Unable to decode '%s' with format '%s'", urlDecodedKey, UTF_8), e);
 		}
-		return s3Client.getUrl(s3Config.getCleanbucket(), uri.getKey());
+		return urlDecodedKey;
 	}
-	
+
 }

@@ -1,5 +1,6 @@
 package uk.gov.digital.ho.egar.vscan;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -36,6 +37,7 @@ import static org.mockito.Mockito.verify;
         "clamav.host=localhost",
         "clamav.port=3310"
 })
+@Ignore
 @ConditionalIgnoreRule.ConditionalIgnore( condition = IgnoreWhenNotIntegration.class )
 public class IntegrationTest {
 

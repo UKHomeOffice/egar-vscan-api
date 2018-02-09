@@ -39,12 +39,6 @@ public class DummyS3FileClient implements FileClient {
 		}
 	}
 
-	@Override
-	@Deprecated
-	public URL moveToNewBucket(String fileLink) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public void setRetrieveFileException(boolean retrieveFileException) {
 		this.retrieveFileException = retrieveFileException;
