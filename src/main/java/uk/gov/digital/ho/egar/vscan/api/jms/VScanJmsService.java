@@ -51,7 +51,10 @@ public class VScanJmsService implements VScanService {
                 errorMessage = String.format("Encountered error when attempting to perform virus scan on file '%s'.", fileRequest.getFileUuid());
             }
             logger.error(errorMessage, e);
-            throw new JMSException(errorMessage);
+            logger.error(e.getMessage());
+            
+//          throw new JMSException(errorMessage);
+
         }
     }
 

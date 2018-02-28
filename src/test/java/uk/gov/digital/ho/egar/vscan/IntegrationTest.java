@@ -37,7 +37,6 @@ import static org.mockito.Mockito.verify;
         "clamav.host=localhost",
         "clamav.port=3310"
 })
-@Ignore
 @ConditionalIgnoreRule.ConditionalIgnore( condition = IgnoreWhenNotIntegration.class )
 public class IntegrationTest {
 
@@ -53,30 +52,33 @@ public class IntegrationTest {
     @Autowired
     private VirusScanService service;
 
-    @Value("{integration.clean.file.link}")
+    @Value("${integration.clean.file.link}")
     private String cleanFileLink;
     //"https://egar-file-upload-cleanTest.s3.eu-west-2.amazonaws.com/53e32000-fb87-11e7-8934-73e8044b20e3/cleanTest.txt"
+    // private String cleanFileLink="https://s3.eu-west-2.amazonaws.com/egar-file-clean/002ffe70-1620-11e8-b2ca-e9866c265bba/upload.doc"; 
 
-    @Value("{integration.infected.file.link}")
+    @Value("${integration.infected.file.link}")
     private String infectedFileLink;
 
     @Test
     public void cleanTest() throws Exception {
 
-        FileRequest request = new FileRequest(UUID.randomUUID(), cleanFileLink);
+        UUID fileUuid = UUID.randomUUID();
+		FileRequest request = new FileRequest(fileUuid, cleanFileLink);
 
         service.performVirusScan(request);
 
-        verify(template, times(1)).convertAndSend("vscan_response","{\"file_uuid\":\"5c74e283-5b0f-4614-bb20-5efd7ce50deb\",\"file_status\":\"CLEAN\"}");
+        verify(template, times(1)).convertAndSend("vscan_response","{\"file_uuid\":\"" + fileUuid.toString() + "\",\"file_status\":\"CLEAN\"}");
     }
 
     @Test
     public void quarantineTest() throws Exception {
 
-        FileRequest request = new FileRequest(UUID.randomUUID(), infectedFileLink);
+        UUID fileUuid = UUID.randomUUID();
+		FileRequest request = new FileRequest(fileUuid, infectedFileLink);
         service.performVirusScan(request);
 
-        verify(template, times(1)).convertAndSend("vscan_response","{\"file_uuid\":\"5c74e283-5b0f-4614-bb20-5efd7ce50deb\",\"file_status\":\"INFECTED\"}");
+        verify(template, times(1)).convertAndSend("vscan_response","{\"file_uuid\":\"" + fileUuid.toString() + "\",\"file_status\":\"INFECTED\"}");
     }
 
 }
